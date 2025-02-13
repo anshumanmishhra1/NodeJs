@@ -1,4 +1,4 @@
-📌Day - 1
+📌 Day - 1
 1. first initialize the project using 
    npm init -y (this create a json file)
 2. we create a src folder and app.js file
@@ -7,7 +7,7 @@
     to save and run the file after closing.
 
 
-📌Day - 2
+📌 Day - 2
 1. Check all the routes and play with 
     routes and check the output
 2. Order or writing the routes matters
@@ -22,7 +22,7 @@
     routes the output will not be different
 
 
-📌Day - 3
+📌 Day - 3
 1. What happen we don't use router handler
     route handler means we don't send the
     response.
@@ -40,7 +40,7 @@
                          
 
 
-📌Day - 4
+📌 Day - 4
 1. Create a folder config and a file database.js
     in it.
 2. We are using mongoose to create models,
@@ -51,3 +51,17 @@
     file in it and create a userSchema 
 5. Now make an api so that we can create
     a user in our database.
+
+
+
+📌 Day - 5
+1. Send the data through the api without using
+    the static method, find the difference between
+    JSON and Javascript Object
+2. Create a feed api that will get all the users
+    from the database using email
+3. Find all the user using email it will be a different
+    api
+4. Create a delete API
+5. Create a Update API for updating the user
+    details.

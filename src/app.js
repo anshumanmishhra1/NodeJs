@@ -42,6 +42,34 @@ app.get("/feed",async(req,res)=>{
   }
 })
 
+app.delete("/user", async(req,res)=>{
+  const userId = req.body._id;
+  try {
+    await User.findByIdAndDelete(userId);
+    res.send("User Deleted Successfully");
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("User Not found or deleted Already");
+  }
+})
+
+app.patch("/user",async (req,res)=>{
+  const userId = req.body._id;
+  const data = req.body;
+  console.log(userId);
+  const user = req.body;
+  console.log(user);
+  try {
+    const user = await User.findByIdAndUpdate(userId,data);
+    console.log(user);
+    res.send("User Updated Successfully");
+    
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("Something went Wrong!!");
+  }
+})
+
 connectDB().then(
   console.log(`mongodb connected successfully`),
   app.listen(7777,()=>{
