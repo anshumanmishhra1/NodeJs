@@ -65,3 +65,25 @@
 4. Create a delete API
 5. Create a Update API for updating the user
     details.
+
+
+
+📌 Day - 6
+1. Make your schema good by taking care that
+    which one is mandatory to create user in
+    our database
+2. Add photoUrl, about, skills photourl = 
+    https://geographyandyou.com/images/user-profile.png
+    work on email so that every letter is in lower 
+    case. also take care that first name is not
+    bigger than 4 and less than 50, also check
+    the user is 18 years or greater, also check
+    gender is male female or others
+3. Add time stamps to the users when they are
+    created and  50:00
+4. Make sure that email is not updated as it 
+    as a sensitive data for any company
+5. Add a validation to the skills where you can't
+    add more skills than 20
+6. Make your gmail validator so that without
+    @, .com no gmail can be accepted
