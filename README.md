@@ -87,3 +87,24 @@
     add more skills than 20
 6. Make your gmail validator so that without
     @, .com no gmail can be accepted
+
+
+📌 Day - 8
+1. Never trust your req.body, validate your 
+    data user must send proper data from the
+    frontend to create the user in your database.
+    for this we create utils and a file name
+    validation.js (where i write the logic or the 
+    function of of validation)
+2. Making the password encrypted as now we
+    are storing the data in plain text that is
+    readable and hence anyone can crack this 
+3. And after doing this you should encrypt the
+    data. For this we use bcrypt to hash our 
+    password
+4. create a login api and check whether the
+    user can login into the application or not
+    and for it validate the email and use bcrypt
+    to validate the users identity
+5. for this we will first whether the emailid 
+    is present in our database 
