@@ -2,47 +2,82 @@ const express = require("express");
 const connectDB = require("./config/database");
 const User = require("./model/user");
 const { signupValidation } = require("./utils/validation");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 //here we are creating the signup route for creating the user
 app.post("/signup", async (req, res) => {
   try {
-    //validation of data 
-    const {firstName, lastName, email, password} = req.body;
+    //validation of data
+    const { firstName, lastName, email, password } = req.body;
     signupValidation(req);
 
     //encrypting of data
-    const hashedPassword = await bcrypt.hash(password,10);
+    const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
-      firstName,lastName,email,password:hashedPassword
+      firstName,
+      lastName,
+      email,
+      password: hashedPassword,
     });
     await user.save();
     res.send("User created Successfully go and check MongoDb");
   } catch (error) {
-    res.status(404).send("Error saving the user"+ error);
+    res.status(404).send("Error saving the user" + error);
   }
 });
 
-app.post("/login",async (req,res)=>{
-  const {email, password} = req.body;
-  try{
-    const user = await User.findOne({email:email});
+app.get("/profile", async (req, res) => {
+  try {
+    const cookies = req.cookies;
+    const { token } = cookies;
+    
+    //validate my token
+    if(!token){
+     throw new Errow("Invalid Token");
+    }
+    const decodedMessage = await jwt.verify(token,"DEV@Tinder$798");
+    const{_id} = decodedMessage;
+    console.log("Logged In user is " + _id)
+    console.log(cookies);
+    const user = await User.findById(_id);
     if(!user){
+      throw new Error("User doesn't exist");
+    }
+    res.send(user);
+  } catch (error) {
+    console.log("Error : " + error.message);
+  }
+});
+
+app.post("/login", async (req, res) => {
+  try {
+    //here we are find or creating the cookie after the user got logged in :
+    const { email, password } = req.body;
+    const user = await User.findOne({ email: email });
+    if (!user) {
       throw new Error("Invalid Credentials");
     }
 
-    const isPassword = await bcrypt.compare(password,user.password);
-    if(isPassword){
-      res.status(200).send("Swagat nahi karoge hamara😎");
-    }else{
+    const isPassword = await bcrypt.compare(password, user.password);
+    if (isPassword) {
+      //create a jwt token
+      const token = await jwt.sign({_id : user._id},"DEV@Tinder$798")
+      console.log(token);
+      //add the token to cookie and send the response back to the user
+      res.cookie("token",token);
+      res.send("Swagat nahi karoge Hamara😎");
+    } else {
       throw new Error("Invalid Credentials");
     }
-  }catch(error){
+  } catch (error) {
     res.send("Error" + error.message);
   }
-})
+});
 
 app.get("/user", async (req, res) => {
   const userEmail = req.body.email;
