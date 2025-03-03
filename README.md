@@ -90,21 +90,27 @@
 
 
 📌 Day - 8
-1. Never trust your req.body, validate your 
-    data user must send proper data from the
-    frontend to create the user in your database.
-    for this we create utils and a file name
-    validation.js (where i write the logic or the 
-    function of of validation)
-2. Making the password encrypted as now we
-    are storing the data in plain text that is
-    readable and hence anyone can crack this 
-3. And after doing this you should encrypt the
-    data. For this we use bcrypt to hash our 
-    password
-4. create a login api and check whether the
-    user can login into the application or not
-    and for it validate the email and use bcrypt
-    to validate the users identity
-5. for this we will first whether the emailid 
-    is present in our database 
+1. Today, we are learning JWT and how to make
+    authentication, we will learn about cookie.
+2. After every request there must be authentication
+    so that they can do any post,get, patch 
+    request
+3. I will create a token after this i will add the
+    token to the key and send the response to
+    the user.
+4. create a profile api, where i will validate my
+    cookie when ever we need to read the cookie
+    i need a middleware named as cookie-parser
+5.  I need that every api should work after 
+    authentication means ours token should be
+    validated. first we have to create the 
+    userAuth and in it read the token from the
+    req cookies, validate the token,  find the 
+    user. find the user in the database after
+    validation
+6. Make an api for sending the connection 
+    request ("/sendConnectionRequest") but
+    for this make sure that the user is 
+    authenticated then after some one can 
+    send the request of connection. 
+    S2 V10 completed

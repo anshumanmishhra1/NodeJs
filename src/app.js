@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const app = express();
+const {userAuth} = require("./middlewares/auth")
 
 app.use(express.json());
 app.use(cookieParser());
@@ -31,23 +32,9 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-app.get("/profile", async (req, res) => {
+app.get("/profile",userAuth, async (req, res) => {
   try {
-    const cookies = req.cookies;
-    const { token } = cookies;
-    
-    //validate my token
-    if(!token){
-     throw new Errow("Invalid Token");
-    }
-    const decodedMessage = await jwt.verify(token,"DEV@Tinder$798");
-    const{_id} = decodedMessage;
-    console.log("Logged In user is " + _id)
-    console.log(cookies);
-    const user = await User.findById(_id);
-    if(!user){
-      throw new Error("User doesn't exist");
-    }
+    const user = req.user;
     res.send(user);
   } catch (error) {
     console.log("Error : " + error.message);
@@ -63,19 +50,18 @@ app.post("/login", async (req, res) => {
       throw new Error("Invalid Credentials");
     }
 
-    const isPassword = await bcrypt.compare(password, user.password);
+    const isPassword = await user.validatePassword(password);
     if (isPassword) {
       //create a jwt token
-      const token = await jwt.sign({_id : user._id},"DEV@Tinder$798")
-      console.log(token);
+      const token = await user.getJWT();
       //add the token to cookie and send the response back to the user
-      res.cookie("token",token);
+      res.cookie("token", token, {expires: new Date(Date.now() + 8*3600000)});
       res.send("Swagat nahi karoge Hamara😎");
     } else {
       throw new Error("Invalid Credentials");
     }
   } catch (error) {
-    res.send("Error" + error.message);
+    res.send("Error: " + error.message);
   }
 });
 
@@ -146,6 +132,13 @@ app.patch("/user/:userId", async (req, res) => {
     res.status(400).send({ error: error.message });
   }
 });
+
+app.post("/sendConnectionRequest",userAuth, async(req,res)=>{
+  const user = req.user;
+
+  console.log("Sending a connection request");
+  res.send(user.firstName + "sent a connection request");
+})
 
 connectDB()
   .then(
