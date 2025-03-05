@@ -114,3 +114,111 @@
     authenticated then after some one can 
     send the request of connection. 
     S2 V10 completed
+
+📌 Day - 9 
+app.get("/user", async (req, res) => {
+  const userEmail = req.body.email;
+
+  try {
+    const users = await User.find({ email: userEmail });
+    if (users.length === 0) {
+      res.status(404).send("User Not Found!!");
+    } else {
+      res.send(users);
+    }
+  } catch (error) {
+    res.status(404).send("User not found!!");
+  }
+
+  //hm hmesha user(jo ki ek model hai) usme mein hi find karenge jahir si bat hai isliye User.find
+});
+
+app.get("/feed", async (req, res) => {
+  try {
+    const users = await User.find({});
+    console.log(users);
+    res.send(users);
+  } catch (error) {
+    res.status(404).send("kya kar raha hai bhai yaha koi nahi hai apna");
+  }
+});
+
+app.delete("/user", async (req, res) => {
+  const userId = req.body._id;
+  try {
+    await User.findByIdAndDelete(userId);
+    res.send("User Deleted Successfully");
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("User Not found or deleted Already");
+  }
+});
+
+app.patch("/user/:userId", async (req, res) => {
+  const userId = req.params?.userId;
+  const data = req.body;
+
+  try {
+    const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age", "skills"];
+    const isUpdateAllowed = Object.keys(data).every((k) =>
+      ALLOWED_UPDATES.includes(k)
+    );
+
+    if (!isUpdateAllowed) {
+      throw new Error("Update not allowed");
+    }
+
+    if (data?.skills?.length > 10) {
+      throw new Error("Skills cannot be more than 10");
+    }
+
+    const user = await User.findByIdAndUpdate({ _id: userId }, data, {
+      returnDocument: "after",
+      runValidators: true,
+    });
+
+    res.send({ message: "User updated successfully!", user });
+  } catch (error) {
+    console.error(error);
+    res.status(400).send({ error: error.message });
+  }
+});
+
+-> may be in future we use this 
+
+1. List all the api that we need to make the
+   devtinder website such as post api for
+    signup, login, logout; Patch api for update
+    the profile; get api for profile; Patch api
+    for updating the password
+    
+    ------------------------------------------------------------------------------------------------
+    |    authRouter :                                                                              |
+    |    - post/singup                                                                             |
+    |    - post/login                                                                              |
+    |    - post/logout                                                                             |
+    |                                                                                              |
+    |    profileRouter :                                                                           |
+    |    -get /profile/view                                                                        |
+    |    -get /profile/edit                                                                        |
+    |    -get /profile/password                                                                    |
+    |                                                                                              |
+    |    connectionRequestRouter :                                                                 |
+    |    -post /request/send/interested/:userId                                                    |
+    |    -post /request/send/ignored/:userId                                                       |
+    |    -post /request/review/accepted/:requestId                                                 |
+    |    -post /request/review/rejected/:requestId                                                 |
+    |                                                                                              |
+    |    userRouter :                                                                              |
+    |    -get /users/connections                                                                   |
+    |    -get /users/requests                                                                      |
+    |    -get /users/feeds (it will get you a lot users in a single call)                          |
+    |                                                                                              |
+    |    -status : ignore, interested, accepted, rejected.                                         |
+    ------------------------------------------------------------------------------------------------
+
+2. in our src folder create a folder named routes
+    in it create a file auth.js (route specific to auth)
+    in it create a file profile.js (route for profile)
+    in it create a file request.js (route for request)
+    
